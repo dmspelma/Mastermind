@@ -4,13 +4,14 @@ require_relative 'mastermind_owner'
 
 # handles game initialization + processes for playing game
 class MastermindGame
-  attr_accessor :turns_remaining
+  attr_accessor :turns_remaining, :state
 
   TURNS = 10
 
   def initialize
     @turns_remaining = nil
     @code_maker = nil
+    @state = :in_progress
   end
 
   def start_game
@@ -19,18 +20,29 @@ class MastermindGame
   end
 
   def take_turn(player_guess)
-    v = validate(player_guess)
-    if v == false
+    if validate(player_guess)
       @turns_remaining -= 1
       ans = @code_maker.compare_guess(player_guess)
       if ans == true
-        winner
+        won
       else
-        puts "Correct Matches: #{ans[0]} | Correct Color But Wrong Spot: #{ans[1]}"
+        ans
       end
     else
-      puts 'Invalid Input, please verify you are entering correct information'
+      false # invalid input, cannot take a turn
     end
+  end
+
+  def won
+    @turns_remaining = 0
+    puts "Congrats! You have cracked the code!"
+    @state = :winner
+  end
+
+  def lost
+    @state = :loser
+    puts "Oh no! You have lost."
+    puts "The Mastermind's code was: #{Owner.answer}"
   end
 
   private
