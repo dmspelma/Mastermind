@@ -1,10 +1,12 @@
 # frozen_string_literal: true
-require_relative 'mastermindOwner'
+
+require_relative 'mastermind_owner'
 
 # handles game initialization + processes for playing game
 class MastermindGame
   attr_accessor :turns_remaining
-  TURNS = 10.freeze
+
+  TURNS = 10
 
   def initialize
     @turns_remaining = nil
@@ -18,24 +20,29 @@ class MastermindGame
 
   def take_turn(player_guess)
     v = validate(player_guess)
-    puts "Invalid Input, please verify you are entering correct information" if v == false
-
-    @turns_remaining -= 1
-
-    
+    if v == false
+      @turns_remaining -= 1
+      ans = @code_maker.compare_guess(player_guess)
+      if ans == true
+        winner
+      else
+        puts "Correct Matches: #{ans[0]} | Correct Color But Wrong Spot: #{ans[1]}"
+      end
+    else
+      puts 'Invalid Input, please verify you are entering correct information'
+    end
   end
 
   private
 
   def validate(guess)
     result = true
-    result &= (guess.class == Array) ? true : false
-    result &= (guess.length == 4) ? true : false
-
+    result &= guess.instance_of?(Array)
+    result &= guess.length == 4
     guess.each do |i|
       result &= (Owner::OPTIONS).include?(i) ? true : false
     end
 
-    return result
+    result
   end
 end

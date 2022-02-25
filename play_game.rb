@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'playGame'
+require 'game'
 
 loop do
   puts "*Starting Masterminds...*"

@@ -1,0 +1,11 @@
+Metrics/BlockLength:
+  IgnoredMethods: ['guard']
+Layout/LineLength:
+  Max: 30
+AllCops:
+  NewCops: enable
+  Exclude:
+    - 'bin/bundle'
+    - 'db/*'
+  TargetRubyVersion:
+    - '2.7.2'
