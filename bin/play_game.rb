@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require '../lib/mastermind/game'
-require '../helper/string_color_helper'
+require_relative '../lib/mastermind/game'
+require_relative '../helper/string_color_helper'
 
 QUIT_CONTENTS = ['quit','q','n','no','exit']
 
@@ -63,7 +63,7 @@ loop do
   print 'Would you like to play again?'.green
   puts ' (Press Q to quit)'.yellow
   case gets.chomp.downcase
-  when 'q', 'quit', 'exit'
+  when 'q', 'quit', 'exit', 'n', 'no'
     puts "Thank you for playing. Goodbye.".green
     break
   else
