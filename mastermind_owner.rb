@@ -14,14 +14,16 @@ class Owner
 
   def initialize
     @answer = [] # maintains position of colors in code
-    @answer_hash = Hash.new(0)
     create_code
   end
 
   def compare_guess(guess)
     return true if guess == @answer
 
-    answer_hash = @answer_hash
+    answer_hash = Hash.new(0)
+    @answer.each do |c|
+      answer_hash[c] = @answer.count(c)
+    end
     correct = 0
     possible = 0
     tmp = [] # holds indexes of guesses that are not exactly 'correct'
@@ -50,10 +52,6 @@ class Owner
   def create_code
     4.times do
       @answer << OPTIONS.sample
-    end
-
-    @answer.each do |c|
-      @answer_hash[c] = @answer.count(c)
     end
   end
 end
