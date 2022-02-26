@@ -1,16 +1,17 @@
 # frozen_string_literal: true
-require './game'
-require './helper/string_color_helper'
+require '../lib/mastermind/game'
+require '../helper/string_color_helper'
 
 QUIT_CONTENTS = ['quit','q','n','no','exit']
-@game_counter = 0
 
+# Main loop for playing the game.
 loop do
   puts 'Starting Masterminds...'.yellow
-  game = MastermindGame.new
+  game = Mastermind::MastermindGame.new
   puts "Creating Game...".yellow
   game.start_game
 
+  # only display help on game start
   if game.game_counter < 1
     print 'Type '.blue
     print 'help'.cyan
@@ -22,7 +23,7 @@ loop do
     puts "(Turns Remaining: #{game.get_turns})".magenta
     player_guess = gets.chomp.upcase.chars
     case player_guess.join.downcase
-    when 'help'
+    when 'help' # player needs help mid-game
       puts "-".cyan * 83
       puts 'Your goal is to crack the code! The code is a 4-color combination of the following:'.green
       puts "`R` for Red".red
@@ -34,14 +35,17 @@ loop do
       print 'NOTE: '.red
       puts 'There can be multiples of the same color.'.green
       puts "-".cyan * 83
-    when 'q', 'quit', 'exit'
+
+    when 'q', 'quit', 'exit' # player wants to quit mid-game
      puts "Terminating Game...".red
      break
-    else
+
+    else # player attempted an input. Compare against master code, return result
       attempt = game.take_turn(player_guess)
       if !attempt
         puts 'Invalid Guess. Please take a look at your input, and ensure it is valid.'.red
-        puts 'If you are unsure, please try command \'help\'.'.red
+        print 'If you are unsure, please try command '.red
+        puts 'help'.cyan
       elsif attempt == :winner
         break
       else
@@ -50,12 +54,11 @@ loop do
       end
     end
     if game.turns_remaining == 0
-      puts 'GAME OVER!'.red
-      puts 'Ran Out Of Turns'.red
+      game.lost
     end
   end
+
   break if QUIT_CONTENTS.include?(player_guess.join.downcase)
-  game.lost if game.state == :loser
 
   print 'Would you like to play again?'.green
   puts ' (Press Q to quit)'.yellow
@@ -64,6 +67,7 @@ loop do
     puts "Thank you for playing. Goodbye.".green
     break
   else
+    puts "-".cyan * 83
     puts 'Loading another round...'.yellow
   end
 
