@@ -18,3 +18,24 @@
 		-> To run all tests:
 			1. Navigate to folder containing application files and type `rspec`
 			2. Navigate to the `spec` folder and run `rspec .`
+
+
+### How to Play Mastermind
+
+#### Rules:
+	The Code-Maker has generated a 4 - Letter code. Each letter corresponds to a color:
+		-> `R` = Red
+		-> `G` = Green
+		-> `B` = Blue
+		-> `Y` = yellow
+		-> `W` = Yellow
+		-> `K` = Black
+	
+	Your goal is to crack the code! Example: 'BGYY'
+
+	You only have 10 guesses to correctly guess the code, otherwise you lose!
+
+	There is an in-game `help` option designed to review these rules.
+
+	You can press `q` during any input to quit and close the game.
+
