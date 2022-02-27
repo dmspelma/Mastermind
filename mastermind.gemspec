@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email       = 'drewspelman@gmail.com'
   s.files       = Dir["{bin,lib,spec,helper}/**/*"] + %w(LICENSE README.md)
   s.test_files  = Dir["spec/**/*"]
-  s.bindir = 'bin'
+  s.bindir      = 'bin'
   s.executables = ['Mastermind']
   s.homepage    = 'https://www.thisfoxcodes.com'
   s.metadata    = { "source_code_uri" => "https://github.com/dmspelma/mastermind" }
