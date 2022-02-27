@@ -5,7 +5,7 @@ require_relative 'mastermind_owner'
 # handles game initialization + processes for playing game
 module Mastermind
   class MastermindGame
-   attr_reader :game_counter
+    attr_reader :game_counter, :code_maker
     attr_accessor :turns_remaining, :state
 
     TURNS = 10
@@ -53,6 +53,7 @@ module Mastermind
       puts 'You have ran out of turns!'.red
       print "The Mastermind's code was: ".red
       puts "#{@code_maker.answer.join}".white
+      @state = :loser
     end
 
     def add_game

@@ -35,6 +35,7 @@ module Mastermind
       x = true
       # I force use of this loop at least once to ensure we get an `answer`
       # That doesn't match the @code_maker.answer
+      # 1/1296 chance of this occurring.
       while x == true
          answer = []
          4.times do
