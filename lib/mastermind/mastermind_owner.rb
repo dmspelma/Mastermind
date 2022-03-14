@@ -19,18 +19,24 @@ module Mastermind
     end
 
     def compare_guess(guess)
-      return true if guess == @answer
+      self.class.compare_guess(self.answer, guess)
+    end
+
+    private
+
+    def self.compare_guess(answer, guess)
+      return true if guess == answer
 
       answer_hash = Hash.new(0)
-      @answer.each do |c|
-        answer_hash[c] = @answer.count(c)
+      answer.each do |c|
+        answer_hash[c] = answer.count(c)
       end
       correct = 0
       possible = 0
       tmp = [] # holds indexes of guesses that are not exactly 'correct'
       # check to see if any index is exactly correct
       guess.each_with_index do |c, i|
-        if c == @answer[i]
+        if c == answer[i]
           correct += 1
           answer_hash[c] -= 1
         else
@@ -47,8 +53,6 @@ module Mastermind
 
       [correct, possible]
     end
-
-    private
 
     def create_code
       4.times do
