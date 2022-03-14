@@ -4,7 +4,7 @@ require_relative '../mastermind/mastermind_owner'
 
 module Mastermind
 	class Solver
-		attr_reader :correct_answer, :turns_to_solve
+		attr_reader :correct_answer, :turns_to_solve, :owner
 
 		OPTIONS = ['R', # red
 		           'G', # green
@@ -17,28 +17,32 @@ module Mastermind
 			@correct_answer = nil
 			@turns_to_solve = 0
       @answer_set = fill_set
+      @solutions_set = fill_set
       @owner = Mastermind::Owner.new
 		end
 
 
-		private
 
+    # solves for master code (Owner.answer)
 		def solve
       guess = ['R','R','G','G'] # starting guess is based off of Wikipedia's Five-guess algorithm
       x = [0,0]
-      loop do # format is [correct, possible]
+      loop do 
+        puts "guess is: #{guess}"
         @turns_to_solve += 1
         x = @owner.compare_guess(guess)
-        break if x == [4,0]
-        @answer_set.delete(guess)
+        break if x == true
         # remove from S any code that would not give the same response if it (the guess) were the code.
-        prune_set(@answer_set, guess, x)
+        prune_set(@solutions_set, guess, x)
         # Apply minimax theory
-
+        guess = minimax # update the guess based on applying minimax.
+                        # Minimax will call to find best guess to return.
       end
-      return [guess, @turns_to_solve]
+
+      return [@correct_answer = guess, @turns_to_solve]
 		end
 
+    # Fill set with all possible code combinations. 1296 combinations.
 		def fill_set
     s = Set.new
 			OPTIONS.each do |i|
@@ -53,16 +57,66 @@ module Mastermind
     return s
 		end
 
+		private
+
+    # removes guess from @solutions_set if any remaining guesses do not return exact same result.
     def prune_set(set, guess, response)
+      set.delete(guess)
       set.each do |guess_set|
         x = Mastermind::Owner.compare_guess(guess, guess_set)
         set.delete(guess_set) unless x == response
       end
     end
 
-    def minimax(set)
+    # Finds the Maximum number of 
+    def minimax
+      next_guesses = [] # This is what will be returned. An array of guesses to take.
+      score = {} # This will hold a map of guesses => max_score
+      map = Hash.new(0) # This will hold a map of score_sets => scores.
+      min = max = 0
 
+      @answer_set.each do |full_answer|
+        @solutions_set.each do |possible_answer|
+          correct_possible = Mastermind::Owner.compare_guess(full_answer, possible_answer)
+          map[correct_possible] += 1
+        end
+        max = map.values.max
+        score[full_answer] = max
+        map.clear
+      end
+      min = score.values.min
+      score.each do |key, value|
+        # puts "Score |key, value| = |#{key}, #{value}|"
+        next_guesses << key if value == min
+      end
+        # puts "score is: #{score}"
+        # puts "next_guess is: #{next_guesses}"
+      return get_next_guess(next_guesses) # Return best guess from list. Prioritizes lowest
+    end
+
+    # returns the first guess that exists.
+    def get_next_guess(guesses)
+      # first checks @solutions_set for guess.
+      guesses.each do |g|
+        return g if @solutions_set.include?(g)
+      end
+
+      # If not found above, then checks @answer_set.
+      guesses.each do |g|
+        return g if @answer_set.include?(g)
+      end
     end
 
 	end
 end
+
+
+
+# Below is for testing
+#
+
+a = Mastermind::Solver.new
+
+
+
+

@@ -19,12 +19,12 @@ module Mastermind
     end
 
     def compare_guess(guess)
-      self.class.compare_guess(self.answer, guess)
+      self.class.compare_guess(self.answer, guess) # should probably add validations/exceptions?
     end
 
     private
 
-    def self.compare_guess(answer, guess)
+    def self.compare_guess(answer, guess) # should probably add validations/exceptions?
       return true if guess == answer
 
       answer_hash = Hash.new(0)
