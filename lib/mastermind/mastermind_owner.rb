@@ -1,17 +1,12 @@
 # frozen_string_literal: true
 
+require_relative '../../helper/color_options_choice' # Includes OPTIONS hash which refers to colors
+
 # This class is the Code Creator.
 # It can compare a received input to check validity
 module Mastermind
   class Owner
     attr_reader :answer
-
-    OPTIONS = ['R', # red
-               'G', # green
-               'B', # blue
-               'Y', # yellow
-               'W', # white
-               'K'].freeze # black
 
     def initialize
       @answer = [] # maintains position of colors in code

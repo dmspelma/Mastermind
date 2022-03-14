@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'mastermind_owner'
-
+require_relative '../../helper/color_options_choice'
 # handles game initialization + processes for playing game
 module Mastermind
   class MastermindGame
@@ -67,7 +67,7 @@ module Mastermind
       result &= guess.instance_of?(Array)
       result &= guess.length == 4
       guess.each do |i|
-        result &= (Mastermind::Owner::OPTIONS).include?(i) ? true : false
+        result &= (OPTIONS).include?(i) ? true : false
       end
 
       result

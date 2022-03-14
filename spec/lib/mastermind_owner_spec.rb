@@ -12,7 +12,7 @@ module Mastermind
       expect(@code_maker.answer.class).to eq(Array)
       expect(@code_maker.answer.length).to eq(4)
       @code_maker.answer.each do |code|
-        expect(Mastermind::Owner::OPTIONS.include?(code)).to eq(true)
+        expect(OPTIONS.include?(code)).to eq(true)
       end
     end
 
@@ -39,7 +39,7 @@ module Mastermind
       while x == true
          answer = []
          4.times do
-           answer << Mastermind::Owner::OPTIONS.sample
+           answer << OPTIONS.sample
          end
          x = @code_maker.compare_guess(answer)
       end
@@ -51,9 +51,9 @@ module Mastermind
     it 'has specific color options' do
       my_options = ['R','G','B','Y','W','K']
       my_options.each do |o|
-        expect(Mastermind::Owner::OPTIONS.include?(o)).to eq(true)
+        expect(OPTIONS.include?(o)).to eq(true)
       end
-      expect(Mastermind::Owner::OPTIONS.length).to eq(6) # verifies we have checked all color options.
+      expect(OPTIONS.length).to eq(6) # verifies we have checked all color options.
     end
   end
 end

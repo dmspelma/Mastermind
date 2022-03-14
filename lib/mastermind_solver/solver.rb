@@ -1,17 +1,13 @@
 # frozen_string_literal: true
 
 require_relative '../mastermind/mastermind_owner'
+require_relative '../../helper/color_options_choice' # Includes OPTIONS hash which refers to colors
+require_relative '../../helper/string_color_helper' # Adds colors to output
+require 'benchmark'
 
-module Mastermind
+module MastermindSolver
 	class Solver
 		attr_reader :correct_answer, :turns_to_solve, :owner
-
-		OPTIONS = ['R', # red
-		           'G', # green
-		           'B', # blue
-		           'Y', # yellow
-		           'W', # white
-		           'K'].freeze # black
 
 		def initialize
 			@correct_answer = nil
@@ -21,14 +17,12 @@ module Mastermind
       @owner = Mastermind::Owner.new
 		end
 
-
-
     # solves for master code (Owner.answer)
 		def solve
       guess = ['R','R','G','G'] # starting guess is based off of Wikipedia's Five-guess algorithm
-      x = [0,0]
-      loop do 
-        puts "guess is: #{guess}"
+      print "Taking guesses: ".yellow
+      loop do
+        print "#{guess} ".yellow
         @turns_to_solve += 1
         x = @owner.compare_guess(guess)
         break if x == true
@@ -38,9 +32,30 @@ module Mastermind
         guess = minimax # update the guess based on applying minimax.
                         # Minimax will call to find best guess to return.
       end
-
-      return [@correct_answer = guess, @turns_to_solve]
+      print "\nFound answer: #{@correct_answer = guess}, and it took ".cyan
+      print "#{@turns_to_solve} ".red
+      puts  "turns to solve.".cyan
+      return [@correct_answer, @turns_to_solve]
 		end
+
+    # For restarting solver to default status, without re-loading @answer_set
+    def restart
+      @solutions_set = fill_set
+      @owner = Mastermind::Owner.new
+      @correct_answer = nil
+      @turns_to_solve = 0
+    end
+
+    def benchmark_solver(number_of_tests)
+      return 'Method only accepts positive numbers' if number_of_tests.class != Integer or number_of_tests < 0
+      time = Benchmark.measure do
+        number_of_tests.times { self.restart ; self.solve }
+      end
+
+      puts time
+    end
+
+    private
 
     # Fill set with all possible code combinations. 1296 combinations.
 		def fill_set
@@ -57,8 +72,6 @@ module Mastermind
     return s
 		end
 
-		private
-
     # removes guess from @solutions_set if any remaining guesses do not return exact same result.
     def prune_set(set, guess, response)
       set.delete(guess)
@@ -68,7 +81,8 @@ module Mastermind
       end
     end
 
-    # Finds the Maximum number of 
+    # Finds the Maximum number of possible correct `guesses`
+    # Then, it chooses the `guess` that provies the smallest number of possible changes
     def minimax
       next_guesses = [] # This is what will be returned. An array of guesses to take.
       score = {} # This will hold a map of guesses => max_score
@@ -110,12 +124,6 @@ module Mastermind
 	end
 end
 
-
-
-# Below is for testing
-#
-
-a = Mastermind::Solver.new
 
 
 
