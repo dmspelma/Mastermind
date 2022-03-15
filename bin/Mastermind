@@ -1,16 +1,18 @@
 #!/usr/bin/env ruby
 
 # frozen_string_literal: true
+
 require_relative '../lib/mastermind/game'
 require_relative '../helper/string_color_helper'
 
-QUIT_CONTENTS = ['quit','q','n','no','exit']
+QUIT_CONTENTS = %w[quit q
+                   n no exit].freeze
 
 # Main loop for playing the game.
 loop do
   puts 'Starting Masterminds...'.yellow
   game = Mastermind::MastermindGame.new
-  puts "Creating Game...".yellow
+  puts 'Creating Game...'.yellow
   game.start_game
 
   # only display help on game start
@@ -21,26 +23,27 @@ loop do
   end
 
   while game.turns_remaining.positive?
-    print "What is your guess? ".green
-    puts "(Turns Remaining: #{game.get_turns})".magenta
+    print 'What is your guess? '.green
+    puts "(Turns Remaining: #{game.g_turns})".magenta
     player_guess = gets.chomp.upcase.chars
     case player_guess.join.downcase
     when 'help' # player needs help mid-game
-      puts "-".cyan * 83
-      puts 'Your goal is to crack the code! The code is a 4-color combination of the following:'.green
-      puts "`R` for Red".red
-      puts "`G` for Green".green
-      puts "`B` for Blue".blue
-      puts "`Y` for Yellow".yellow
-      puts "`W` for White".white
-      puts "`K` for Black".black
+      puts '-'.cyan * 83
+      print 'Your goal is to crack the code! '.green
+      puts 'The code is a 4-color combination of the following:'.green
+      puts '`R` for Red'.red
+      puts '`G` for Green'.green
+      puts '`B` for Blue'.blue
+      puts '`Y` for Yellow'.yellow
+      puts '`W` for White'.white
+      puts '`K` for Black'.black
       print 'NOTE: '.red
       puts 'There can be multiples of the same color.'.green
-      puts "-".cyan * 83
+      puts '-'.cyan * 83
 
     when 'q', 'quit', 'exit' # player wants to quit mid-game
-     puts "Terminating Game...".red
-     break
+      puts 'Terminating Game...'.red
+      break
 
     else # player attempted an input. Compare against master code, return result
       attempt = game.take_turn(player_guess)
@@ -55,9 +58,7 @@ loop do
         puts "| Correct Color, Wrong Spot: #{attempt[1]}".cyan
       end
     end
-    if game.turns_remaining == 0
-      game.lost
-    end
+    game.lost if game.turns_remaining.zero?
   end
 
   break if QUIT_CONTENTS.include?(player_guess.join.downcase)
@@ -66,13 +67,12 @@ loop do
   puts ' (Press Q to quit)'.yellow
   case gets.chomp.downcase
   when 'q', 'quit', 'exit', 'n', 'no'
-    puts "Thank you for playing. Goodbye.".green
+    puts 'Thank you for playing. Goodbye.'.green
     break
   else
-    puts "-".cyan * 83
+    puts '-'.cyan * 83
     puts 'Loading another round...'.yellow
   end
 
   game.add_game
 end
-

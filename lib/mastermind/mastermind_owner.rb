@@ -2,9 +2,8 @@
 
 require_relative '../../helper/color_options_choice' # Includes OPTIONS hash which refers to colors
 
-# This class is the Code Creator.
-# It can compare a received input to check validity
 module Mastermind
+  # Owner class is the Code-Maker. When generated, the Code-Breaker is guessing @answer.
   class Owner
     attr_reader :answer
 
@@ -14,17 +13,17 @@ module Mastermind
     end
 
     def compare_guess(guess)
-      self.class.compare_guess(self.answer, guess) # should probably add validations/exceptions?
+      self.class.compare_guess(answer, guess) # should probably add validations/exceptions?
     end
 
-    private
-
-    def self.compare_guess(answer, guess) # should probably add validations/exceptions?
+    # should probably add validations/exceptions?
+    def self.compare_guess(answer, guess)
       return true if guess == answer
 
       answer_hash = Hash.new(0)
       answer.each do |c|
-        answer_hash[c] = answer.count(c)
+        answer_hash[c] =
+          answer.count(c)
       end
       correct = 0
       possible = 0
@@ -49,6 +48,8 @@ module Mastermind
       [correct, possible]
     end
 
+    private
+
     def create_code
       4.times do
         @answer << OPTIONS.sample
@@ -56,6 +57,3 @@ module Mastermind
     end
   end
 end
-
-
-

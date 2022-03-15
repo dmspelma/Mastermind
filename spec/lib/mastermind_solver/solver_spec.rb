@@ -18,8 +18,12 @@ module MastermindSolver
 
     it 'verifies fill_set method creates set with 1296 different entries' do
       expect(@my_solver.solutions_set.length).to eq(1296)
-      expect(@my_solver.solutions_set.include?(['R','R','R','R'])).to eq(true)
-      expect(@my_solver.solutions_set.include?(['R','R','G','B'])).to eq(true)
+      expect(@my_solver.solutions_set.include?(%w[
+                                                 R R R R
+                                               ])).to eq(true)
+      expect(@my_solver.solutions_set.include?(%w[
+                                                 R R G B
+                                               ])).to eq(true)
     end
 
     it 'restart method generates new values for initialized variables WITHOUT .solve' do
@@ -91,21 +95,13 @@ module MastermindSolver
     end
 
     it 'can benchmark solving for the master code' do
-      expect(@my_solver.benchmark(2)).to_not eq(nil)
+      expect(@my_solver.benchmark(2)).to eq(nil)
     end
 
-    it 'return-type for benchmark is a tuple of: total_time, average_time, average_turn_count' do
+    it 'return-type for benchmark is nil' do
       return_type = @my_solver.benchmark(2)
 
-      expect(return_type.class).to eq(Array)
-      expect(return_type.length).to eq(3)
-      expect(return_type[0]).to be > 1.0 # total_time is above 1s. Unless both tests guess on first try.
-      expect(return_type[0].class).to eq(Float)
-      expect(return_type[1]).to be > 0.0 # avg_time is ~0.67s
-      expect(return_type[1]).to be < 1.0
-      expect(return_type[1].class).to eq(Float)
-      expect(return_type[2]).to be <= 5 # appears that max turns_to_solve is 5 w/ current implementation.
-      expect(return_type[2].class).to eq(Float)
+      expect(return_type).to eq(nil)
     end
 
     it 'benchmark method only accepts positive numbers' do

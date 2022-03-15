@@ -7,5 +7,3 @@ OPTIONS = ['R', # red
            'Y', # yellow
            'W', # white
            'K'].freeze # black
-
-# 
