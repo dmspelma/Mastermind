@@ -20,9 +20,7 @@ module MastermindSolver
     # solves for master code (Owner.answer)
 		def solve
       guess = ['R','R','G','G'] # starting guess is based off of Wikipedia's Five-guess algorithm
-      print "Taking guesses: ".yellow
       loop do
-        print "#{guess} ".yellow
         @turns_to_solve += 1
         x = @owner.compare_guess(guess)
         break if x == true
@@ -32,7 +30,7 @@ module MastermindSolver
         guess = minimax # update the guess based on applying minimax.
                         # Minimax will call to find best guess to return.
       end
-      print "\nFound answer: #{@correct_answer = guess}, and it took ".cyan
+      print "Found answer: #{@correct_answer = guess}, and it took ".cyan
       print "#{@turns_to_solve} ".red
       puts  "turns to solve.".cyan
       return [@correct_answer, @turns_to_solve]
@@ -46,13 +44,28 @@ module MastermindSolver
       @turns_to_solve = 0
     end
 
-    def benchmark_solver(number_of_tests)
+    def benchmark(number_of_tests)
       return 'Method only accepts positive numbers' if number_of_tests.class != Integer or number_of_tests < 0
-      time = Benchmark.measure do
-        number_of_tests.times { self.restart ; self.solve }
+      time = []
+      number_of_tests.times do
+        time << [Benchmark.realtime { self.restart ; self.solve }, self.turns_to_solve]
       end
-
-      puts time
+      total, turns, max = 0.to_f, 0, 0
+      time.each do |x|
+        total += x[0]
+        turns += x[1]
+        max = x[1] if x[1] > max
+      end
+      print "Entered # of Attempts: ".yellow
+      print "#{number_of_tests}".red
+      print " | Total Realtime: ".yellow
+      print "#{total}".blue
+      print " | Avg Time: ".yellow
+      print "#{total / time.length}".green
+      print " | Avg Number of Turns Taken: ".yellow
+      print  "#{turns.to_f / time.length.to_f}".green
+      print " | Max Turns Taken: ".yellow
+      puts  "#{max}".blue
     end
 
     private
@@ -120,7 +133,6 @@ module MastermindSolver
         return g if @answer_set.include?(g)
       end
     end
-
 	end
 end
 
