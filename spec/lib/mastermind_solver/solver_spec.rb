@@ -112,7 +112,7 @@ module MastermindSolver
       try_zero     = @my_solver.benchmark(0)
       try_negative = @my_solver.benchmark(-1)
       try_letter   = @my_solver.benchmark('a')
-      try_nil   = @my_solver.benchmark(nil)
+      try_nil      = @my_solver.benchmark(nil)
 
       expect(try_zero).to eq(false)
       expect(try_negative).to eq(false)
