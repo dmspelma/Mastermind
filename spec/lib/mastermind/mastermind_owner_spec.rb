@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-require_relative '../../lib/mastermind/mastermind_owner'
+
+require_relative '../../../lib/mastermind/mastermind_owner'
 
 module Mastermind
   describe Owner do
-
     before do
       @code_maker = Mastermind::Owner.new
     end
@@ -12,16 +12,14 @@ module Mastermind
       expect(@code_maker.answer.class).to eq(Array)
       expect(@code_maker.answer.length).to eq(4)
       @code_maker.answer.each do |code|
-        expect(Mastermind::Owner::OPTIONS.include?(code)).to eq(true)
+        expect(OPTIONS.include?(code)).to eq(true)
       end
     end
 
     it 'each code on initialization is random' do
       @code_maker_dup = Mastermind::Owner.new
       # Added while loop here to prevent 1/1296 chance of failing test
-      while @code_maker_dup.answer == @code_maker.answer
-        @code_maker_dop = Mastermind::Owner.new
-      end
+      @code_maker_dop = Mastermind::Owner.new while @code_maker_dup.answer == @code_maker.answer
       expect(@code_maker.answer).to_not eq(@code_maker_dup.answer)
     end
 
@@ -37,23 +35,24 @@ module Mastermind
       # That doesn't match the @code_maker.answer
       # 1/1296 chance of this occurring.
       while x == true
-         answer = []
-         4.times do
-           answer << Mastermind::Owner::OPTIONS.sample
-         end
-         x = @code_maker.compare_guess(answer)
+        answer = []
+        4.times do
+          answer << OPTIONS.sample
+        end
+        x = @code_maker.compare_guess(answer)
       end
       expect(x.class).to eq(Array)
       expect(x.length).to eq(2)
-      expect(x[0] + x[1]).to be <=4
+      expect(x[0] + x[1]).to be <= 4
     end
 
     it 'has specific color options' do
-      my_options = ['R','G','B','Y','W','K']
+      my_options = %w[R G
+                      B Y W K]
       my_options.each do |o|
-        expect(Mastermind::Owner::OPTIONS.include?(o)).to eq(true)
+        expect(OPTIONS.include?(o)).to eq(true)
       end
-      expect(Mastermind::Owner::OPTIONS.length).to eq(6) # verifies we have checked all color options.
+      expect(OPTIONS.length).to eq(6) # verifies we have checked all color options.
     end
   end
 end

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-require_relative '../../lib/mastermind/game'
-require_relative '../../helper/string_color_helper'
-require_relative '../helper/spec_helper'
+
+require_relative '../../../lib/mastermind/game'
+require_relative '../../../helper/string_color_helper'
+require_relative '../../helper/spec_helper'
 
 module Mastermind
-
   # Base kit of MastermindGame Class
   RSpec.describe MastermindGame do
     before do
@@ -34,7 +34,9 @@ module Mastermind
 
     it 'only read @game_counter' do
       expect(@game.game_counter).to eq(0)
-      expect {@game.game_counter = 3 }.to raise_error(NoMethodError)
+      expect do
+        @game.game_counter = 3
+      end.to raise_error(NoMethodError)
     end
   end
 
@@ -53,16 +55,18 @@ module Mastermind
     end
 
     it 'can get current number of turns' do
-      a = @game.get_turns
+      a = @game.g_turns
       expect(a.class).to eq(String)
       expect(a.inspect).to include('10')
     end
 
     it 'can take a successful turn' do
-      turn = @game.take_turn(['W','K','G','W'])
+      turn = @game.take_turn(%w[
+                               W K G W
+                             ])
       expect(@game.turns_remaining).to eq(9)
-      expect(turn[0]).to include("")
-      expect(turn[1]).to include("")
+      expect(turn[0]).to include('')
+      expect(turn[1]).to include('')
     end
 
     it 'can take a winning turn' do
@@ -100,4 +104,3 @@ module Mastermind
     end
   end
 end
-

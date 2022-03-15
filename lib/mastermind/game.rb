@@ -1,12 +1,16 @@
 # frozen_string_literal: true
 
 require_relative 'mastermind_owner'
+require_relative '../../helper/color_options_choice'
 
 # handles game initialization + processes for playing game
 module Mastermind
+  # The Game class. This handles game mechanics
   class MastermindGame
-    attr_reader :game_counter, :code_maker
-    attr_accessor :turns_remaining, :state
+    attr_reader :game_counter,
+                :code_maker
+    attr_accessor :turns_remaining,
+                  :state
 
     TURNS = 10
 
@@ -23,7 +27,7 @@ module Mastermind
       @code_maker = Mastermind::Owner.new
     end
 
-    def get_turns
+    def g_turns
       @turns_remaining.to_s.red
     end
 
@@ -34,7 +38,8 @@ module Mastermind
         if ans == true
           won
         else
-          [ans[0].to_s.green, ans[1].to_s.yellow]
+          [ans[0].to_s.green,
+           ans[1].to_s.yellow]
         end
       else
         false # invalid input, cannot take a turn
@@ -42,17 +47,17 @@ module Mastermind
     end
 
     def won
-      print "Congrats! You have cracked the code with ".green
-      print "#{@turns_remaining}".blue
-      puts " turns left!".green
+      print 'Congrats! You have cracked the code with '.green
+      print @turns_remaining.to_s.blue
+      puts ' turns left!'.green
       @state = :winner
     end
 
     def lost
-      puts "GAME OVER!".red
+      puts 'GAME OVER!'.red
       puts 'You have ran out of turns!'.red
       print "The Mastermind's code was: ".red
-      puts "#{@code_maker.answer.join}".white
+      puts @code_maker.answer.join.to_s.white
       @state = :loser
     end
 
@@ -67,7 +72,7 @@ module Mastermind
       result &= guess.instance_of?(Array)
       result &= guess.length == 4
       guess.each do |i|
-        result &= (Mastermind::Owner::OPTIONS).include?(i) ? true : false
+        result &= (OPTIONS).include?(i)
       end
 
       result

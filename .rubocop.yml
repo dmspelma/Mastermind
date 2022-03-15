@@ -1,11 +1,19 @@
+Style/CombinableLoops:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/ClassLength:
+  Max: 150
+Metrics/MethodLength:
+  Max: 60
 Metrics/BlockLength:
-  IgnoredMethods: ['guard']
+  IgnoredMethods: ['guard', 'loop', 'describe']
+  Max: 40
 Layout/LineLength:
-  Max: 30
+  Max: 100
 AllCops:
   NewCops: enable
   Exclude:
     - 'bin/bundle'
     - 'db/*'
-  TargetRubyVersion:
-    - '2.7.2'
+  TargetRubyVersion: 3.0.0
