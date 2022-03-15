@@ -6,6 +6,8 @@ Metrics/ClassLength:
   Max: 150
 Metrics/MethodLength:
   Max: 60
+Metrics/ModuleLength:
+  Max: 150
 Metrics/BlockLength:
   IgnoredMethods: ['guard', 'loop', 'describe']
   Max: 40
