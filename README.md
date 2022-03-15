@@ -13,6 +13,15 @@
 	2. Type: `cd /bin/` to navigate to the bin
 	3. Type: `ruby Mastermind` (Alternatively, if you don't type command above, use: `ruby /bin/Zephyr`)
 
+###### To run Mastermind Solver:
+	1. The Mastermind Solver is a class that can be ran in a irb session
+		-> While in main application folder, type 'irb -r ./lib/mastermind_solver/solver.rb' to load the file into an irb session
+		a. `MastermindSolver::Solver.new` creates a new instance of the solver class.
+		b. The `.solve` method will solve for the solution. It will return an array containing [`master_code`, `turns_to_solve_for_code`]
+			- NOTE: This puts the Solver class in state `:solved`. To perform again, run `.restart`
+		c. The `.benchmark(num)` method will perform the above 2 methods `num` of times. It will return an array containing [`total_time`, `avg_time_to_solve`, `avg_turns_to_solve`, `max_turns_to_solve`]
+
+
 ###### Special Notes:
 	- Rspec is used to run tests.
 		-> To run all tests:
@@ -37,5 +46,10 @@
 
 	There is an in-game `help` option designed to review these rules.
 
-	You can press `q` during any input to quit and close the game.
+	You can press `q`, `exit`, or `quit` during any input to quit and close the game.
 
+### Benchmarks
+
+	Since adding the benchmark method to the Solver class, I tried to benchmark the program's performance. I ran 1296 tests per attempt, and ran 11 attempts. I aggregated the data into a spreadsheet to find the average total values returned from the benchmark method. At the end I have included my machine's specs, because if you were to repeat the tests you may expeience differences due to machine performance.
+
+	![Benchmark results for solve method](/assets/images/mastermind_solver/ "Benchmark Results")

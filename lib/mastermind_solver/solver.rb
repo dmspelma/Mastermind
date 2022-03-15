@@ -47,9 +47,7 @@ module MastermindSolver
       print "Found answer: #{@correct_answer = guess}, and it took ".cyan
       print "#{@turns_to_solve} ".red
       puts  'turns to solve.'.cyan
-      [
-        @correct_answer, @turns_to_solve
-      ]
+      [@correct_answer, @turns_to_solve]
     end
 
     # For restarting solver to default status, without re-loading @answer_set
@@ -73,6 +71,7 @@ module MastermindSolver
                    solve
                  end, turns_to_solve]
       end
+      restart
       calculate_and_return(time, number_of_tests)
     end
 
@@ -89,6 +88,8 @@ module MastermindSolver
         [answer[0], answer[0].to_f / my_info.length, answer[1].to_f / my_info.length,
          answer[2]], number_of_tests
       )
+      [answer[0], answer[0].to_f / my_info.length,
+       answer[1].to_f / my_info.length, answer[2]]
     end
 
     def benchmark_print(answer, number_of_tests)

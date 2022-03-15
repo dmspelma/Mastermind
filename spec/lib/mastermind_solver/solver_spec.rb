@@ -95,13 +95,18 @@ module MastermindSolver
     end
 
     it 'can benchmark solving for the master code' do
-      expect(@my_solver.benchmark(2)).to eq(nil)
+      expect(@my_solver.benchmark(2)).to_not eq(nil)
     end
 
-    it 'return-type for benchmark is nil' do
+    it 'return-type for benchmark is array with 4 elements' do
       return_type = @my_solver.benchmark(2)
 
-      expect(return_type).to eq(nil)
+      expect(return_type.class).to eq(Array)
+      expect(return_type.length).to eq(4)
+      expect(return_type[0].class).to eq(Float)
+      expect(return_type[1].class).to eq(Float)
+      expect(return_type[2].class).to eq(Float)
+      expect(return_type[3].class).to eq(Integer)
     end
 
     it 'benchmark method only accepts positive numbers' do
@@ -114,6 +119,11 @@ module MastermindSolver
       expect(try_negative).to eq(false)
       expect(try_letter).to eq(false)
       expect(try_nil).to eq(false)
+    end
+
+    it 'can perform .solve after .benchmark(integer)' do
+      expect(@my_solver.benchmark(2).length).to eq(4)
+      expect(@my_solver.solve.length).to eq(2)
     end
   end
 end
