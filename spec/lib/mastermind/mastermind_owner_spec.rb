@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require_relative '../../lib/mastermind/mastermind_owner'
+
+require_relative '../../../lib/mastermind/mastermind_owner'
 
 module Mastermind
   describe Owner do

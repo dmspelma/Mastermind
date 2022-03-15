@@ -1,7 +1,8 @@
 # frozen_string_literal: true
-require_relative '../../lib/mastermind/game'
-require_relative '../../helper/string_color_helper'
-require_relative '../helper/spec_helper'
+
+require_relative '../../../lib/mastermind/game'
+require_relative '../../../helper/string_color_helper'
+require_relative '../../helper/spec_helper'
 
 module Mastermind
 

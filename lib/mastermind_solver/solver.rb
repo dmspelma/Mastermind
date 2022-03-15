@@ -7,18 +7,23 @@ require 'benchmark'
 
 module MastermindSolver
 	class Solver
-		attr_reader :correct_answer, :turns_to_solve, :owner
+    attr_reader :correct_answer, :turns_to_solve, :owner, :solutions_set, :state
 
 		def initialize
 			@correct_answer = nil
 			@turns_to_solve = 0
       @answer_set = fill_set
       @solutions_set = fill_set
+      @state = :unsolved
       @owner = Mastermind::Owner.new
 		end
 
     # solves for master code (Owner.answer)
-		def solve
+    def solve
+      if @state == :solved
+        puts "You have already solved. You need to perfor `.restart` before you can try again"
+        return false
+      end
       guess = ['R','R','G','G'] # starting guess is based off of Wikipedia's Five-guess algorithm
       loop do
         @turns_to_solve += 1
@@ -30,11 +35,12 @@ module MastermindSolver
         guess = minimax # update the guess based on applying minimax.
                         # Minimax will call to find best guess to return.
       end
+      @state = :solved
       print "Found answer: #{@correct_answer = guess}, and it took ".cyan
       print "#{@turns_to_solve} ".red
       puts  "turns to solve.".cyan
       return [@correct_answer, @turns_to_solve]
-		end
+    end
 
     # For restarting solver to default status, without re-loading @answer_set
     def restart
@@ -42,10 +48,14 @@ module MastermindSolver
       @owner = Mastermind::Owner.new
       @correct_answer = nil
       @turns_to_solve = 0
+      @state = :unsolved
     end
 
     def benchmark(number_of_tests)
-      return 'Method only accepts positive numbers' if number_of_tests.class != Integer or number_of_tests < 0
+      if number_of_tests.class != Integer || number_of_tests <= 0
+        puts 'Method only accepts positive numbers'
+        return false
+      end
       time = []
       number_of_tests.times do
         time << [Benchmark.realtime { self.restart ; self.solve }, self.turns_to_solve]
@@ -66,6 +76,7 @@ module MastermindSolver
       print  "#{turns.to_f / time.length.to_f}".green
       print " | Max Turns Taken: ".yellow
       puts  "#{max}".blue
+      return [total, total / time.length, turns.to_f / time.length.to_f]
     end
 
     private

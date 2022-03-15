@@ -5,5 +5,7 @@ RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
     mocks.syntax = [:should, :receive]
   end
+
+  config.filter_run_when_matching :focus
 end
 
