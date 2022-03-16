@@ -19,8 +19,17 @@ module Mastermind
     end
 
     it 'version parameter is optional and defaults to :regular' do
+      my_set = Mastermind::Owner.new(:regular)
+
+      expect(my_set.answer.length).to eq(4)
+      expect(my_set.version).to eq(@code_maker.version)
       expect(@code_maker.answer.length).to eq(4)
       expect(@code_maker.version).to eq(:regular)
+    end
+
+    it 'defaults invalid version option to :regular' do
+      my_set_wrong = Mastermind::Owner.new(:test)
+      expect(my_set_wrong.version).to eq(:regular)
     end
 
     it 'each code on initialization is random' do

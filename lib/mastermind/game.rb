@@ -18,7 +18,7 @@ module Mastermind
       @code_maker = nil
       @state = nil
       @game_counter = 0
-      @version = version
+      @version = VERSIONS.include?(version) ? version : :regular
     end
 
     def start_game

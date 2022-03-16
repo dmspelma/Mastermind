@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../helper/color_options_choice' # Includes OPTIONS hash which refers to colors
-require_relative '../../helper/game_settings_helper'
+require_relative '../../helper/game_settings_helper' # Includes game settings variables.
 
 module Mastermind
   # Owner class is the Code-Maker. When generated, the Code-Breaker is guessing @answer.
@@ -11,7 +11,7 @@ module Mastermind
 
     def initialize(version = :regular)
       @answer = [] # maintains position of colors in code
-      @version = version
+      @version = VERSIONS.include?(version) ? version : :regular
       create_code
     end
 
