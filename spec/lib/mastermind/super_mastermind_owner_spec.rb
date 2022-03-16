@@ -69,7 +69,7 @@ module Mastermind
       my_options.each do |o|
         expect(OPTIONS[@code_maker.version].include?(o)).to eq(true)
       end
-      expect(OPTIONS[@code_maker.version].length).to eq(8) # verifies we have checked all color options.
+      expect(OPTIONS[@code_maker.version].length).to eq(8)
     end
   end
 end

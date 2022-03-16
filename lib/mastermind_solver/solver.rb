@@ -3,6 +3,7 @@
 require_relative '../mastermind/mastermind_owner'
 require_relative '../../helper/color_options_choice' # Includes OPTIONS hash which refers to colors
 require_relative '../../helper/string_color_helper' # Adds colors to output
+require_relative '../../helper/game_settings_helper'
 require 'benchmark'
 
 module MastermindSolver
@@ -17,10 +18,10 @@ module MastermindSolver
     def initialize
       @correct_answer = nil
       @turns_to_solve = 0
-      @answer_set = fill_set
-      @solutions_set = fill_set
       @state = :unsolved
       @owner = Mastermind::Owner.new
+      @answer_set = fill_set
+      @solutions_set = fill_set
     end
 
     # solves for master code (Owner.answer)
@@ -108,12 +109,25 @@ module MastermindSolver
     # Fill set with all possible code combinations. 1296 combinations.
     def fill_set
       s = Set.new
-      OPTIONS.each do |i|
-        OPTIONS.each do |j|
-          OPTIONS.each do |k|
-            OPTIONS.each do |l|
-              s.add([i, j,
-                     k, l])
+      if owner.version == :regular
+        OPTIONS[owner.version].each do |i|
+          OPTIONS[owner.version].each do |j|
+            OPTIONS[owner.version].each do |k|
+              OPTIONS[owner.version].each do |l|
+                s.add([i, j, k, l])
+              end
+            end
+          end
+        end
+      else
+        OPTIONS[owner.version].each do |a|
+          OPTIONS[owner.version].each do |b|
+            OPTIONS[owner.version].each do |c|
+              OPTIONS[owner.version].each do |d|
+                OPTIONS[owner.version].each do |e|
+                  s.add([a, b, c, d, e])
+                end
+              end
             end
           end
         end

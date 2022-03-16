@@ -7,12 +7,12 @@ require_relative '../helper/string_color_helper'
 require_relative '../helper/game_settings_helper'
 
 def begin_set(ver)
- return :regular if ver == 1
- return :super if ver == 2
+  return :regular if ver == 1
+  return :super if ver == 2
 
- puts 'Invalid Option Entered!!'.red
- puts 'Please Press 1 for Mastermind, or Press 2 for Super Mastermind'.green
- begin_set(gets.chomp.to_i)
+  puts 'Invalid Option Entered!!'.red
+  puts 'Please Press 1 for Mastermind, or Press 2 for Super Mastermind'.green
+  begin_set(gets.chomp.to_i)
 end
 
 # Main loop for playing the game.
@@ -88,5 +88,3 @@ loop do
 
   game.add_game
 end
-
-
