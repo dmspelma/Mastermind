@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../helper/color_options_choice' # Includes OPTIONS hash which refers to colors
+require_relative '../../helper/game_settings_helper'
 
 module Mastermind
   # Owner class is the Code-Maker. When generated, the Code-Breaker is guessing @answer.
@@ -15,6 +16,8 @@ module Mastermind
     end
 
     def compare_guess(guess)
+      return false if guess.length != LENGTH[version]
+
       self.class.compare_guess(answer, guess) # should probably add validations/exceptions?
     end
 
@@ -28,8 +31,7 @@ module Mastermind
         answer_hash[c] =
           answer.count(c)
       end
-      correct = 0
-      possible = 0
+      correct = possible = 0
       tmp = [] # holds indexes of guesses that are not exactly 'correct'
       # check to see if any index is exactly correct
       guess.each_with_index do |c, i|

@@ -19,7 +19,7 @@ module Mastermind
     end
 
     it 'has a default of 10 turns' do
-      expect(Mastermind::MastermindGame::TURNS).to eq(10)
+      expect(TURNS[@game.version]).to eq(10)
     end
 
     it 'can read/write @turns_remaining and @state' do
