@@ -5,10 +5,12 @@ require_relative '../../helper/color_options_choice' # Includes OPTIONS hash whi
 module Mastermind
   # Owner class is the Code-Maker. When generated, the Code-Breaker is guessing @answer.
   class Owner
-    attr_reader :answer
+    attr_reader :answer,
+                :version
 
-    def initialize
+    def initialize(version = :regular)
       @answer = [] # maintains position of colors in code
+      @version = version
       create_code
     end
 
@@ -18,6 +20,7 @@ module Mastermind
 
     # should probably add validations/exceptions?
     def self.compare_guess(answer, guess)
+      return false if answer.length != guess.length
       return true if guess == answer
 
       answer_hash = Hash.new(0)
@@ -51,8 +54,8 @@ module Mastermind
     private
 
     def create_code
-      4.times do
-        @answer << OPTIONS.sample
+      LENGTH[version].times do
+        @answer << OPTIONS[version].sample
       end
     end
   end
