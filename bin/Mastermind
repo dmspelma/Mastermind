@@ -4,14 +4,22 @@
 
 require_relative '../lib/mastermind/game'
 require_relative '../helper/string_color_helper'
+require_relative '../helper/game_settings_helper'
 
-QUIT_CONTENTS = %w[quit q
-                   n no exit].freeze
+def begin_set(ver)
+  return :regular if ver == 1
+  return :super if ver == 2
+
+  puts 'Invalid Option Entered!!'.red
+  puts 'Please Press 1 for Mastermind, or Press 2 for Super Mastermind'.green
+  begin_set(gets.chomp.to_i)
+end
 
 # Main loop for playing the game.
 loop do
   puts 'Starting Masterminds...'.yellow
-  game = Mastermind::MastermindGame.new
+  puts 'Press 1 for Mastermind, or Press 2 for Super Mastermind'.green
+  game = Mastermind::MastermindGame.new(begin_set(gets.chomp.to_i))
   puts 'Creating Game...'.yellow
   game.start_game
 
@@ -24,21 +32,24 @@ loop do
 
   while game.turns_remaining.positive?
     print 'What is your guess? '.green
-    puts "(Turns Remaining: #{game.g_turns})".magenta
+    puts "(Turns Remaining: #{game.g_turns})".purple
     player_guess = gets.chomp.upcase.chars
     case player_guess.join.downcase
     when 'help' # player needs help mid-game
       puts '-'.cyan * 83
       print 'Your goal is to crack the code! '.green
-      puts 'The code is a 4-color combination of the following:'.green
+      puts "The code is a #{LENGTH[game.version]}-color combination of the following:".green
       puts '`R` for Red'.red
       puts '`G` for Green'.green
       puts '`B` for Blue'.blue
       puts '`Y` for Yellow'.yellow
+      puts '`C` for Cyan'.cyan if game.version == :super
+      puts '`P` for Purple'.purple if game.version == :super
       puts '`W` for White'.white
       puts '`K` for Black'.black
       print 'NOTE: '.red
       puts 'There can be multiples of the same color.'.green
+      puts "You only have #{TURNS[game.version]}".red
       puts '-'.cyan * 83
 
     when 'q', 'quit', 'exit' # player wants to quit mid-game

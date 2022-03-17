@@ -27,7 +27,7 @@ class String
     "\033[34m#{self}\033[0m"
   end
 
-  def magenta
+  def purple
     "\033[35m#{self}\033[0m"
   end
 

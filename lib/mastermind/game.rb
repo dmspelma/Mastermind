@@ -8,23 +8,23 @@ module Mastermind
   # The Game class. This handles game mechanics
   class MastermindGame
     attr_reader :game_counter,
-                :code_maker
+                :code_maker,
+                :version
     attr_accessor :turns_remaining,
                   :state
 
-    TURNS = 10
-
-    def initialize
+    def initialize(version = :regular)
       @turns_remaining = nil
       @code_maker = nil
       @state = nil
       @game_counter = 0
+      @version = VERSIONS.include?(version) ? version : :regular
     end
 
     def start_game
-      @turns_remaining ||= TURNS
+      @turns_remaining ||= TURNS[version]
       @state = :in_progress
-      @code_maker = Mastermind::Owner.new
+      @code_maker = Mastermind::Owner.new(version)
     end
 
     def g_turns
@@ -70,9 +70,9 @@ module Mastermind
     def validate(guess)
       result = true
       result &= guess.instance_of?(Array)
-      result &= guess.length == 4
+      result &= guess.length == LENGTH[version]
       guess.each do |i|
-        result &= (OPTIONS).include?(i)
+        result &= (OPTIONS[version]).include?(i)
       end
 
       result
