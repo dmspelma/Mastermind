@@ -22,7 +22,7 @@ module Mastermind
 
     it 'each code on initialization is random' do
       @code_maker_dup = Mastermind::Owner.new(:super)
-      # Added while loop here to prevent 1/1296 chance of failing test
+      # Added while loop here to prevent 1/32768 chance of failing test
       @code_maker_dup = Mastermind::Owner.new while @code_maker_dup.answer == @code_maker.answer
       expect(@code_maker.answer).to_not eq(@code_maker_dup.answer)
     end
@@ -37,7 +37,7 @@ module Mastermind
       x = true
       # I force use of this loop at least once to ensure we get an `answer`
       # That doesn't match the @code_maker.answer
-      # 1/1296 chance of this occurring.
+      # 1/32768 chance of this occurring.
       while x == true
         answer = []
         LENGTH[@code_maker.version].times do

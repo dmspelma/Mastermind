@@ -19,8 +19,7 @@ end
 loop do
   puts 'Starting Masterminds...'.yellow
   puts 'Press 1 for Mastermind, or Press 2 for Super Mastermind'.green
-  version = begin_set(gets.chomp.to_i)
-  game = Mastermind::MastermindGame.new(version)
+  game = Mastermind::MastermindGame.new(begin_set(gets.chomp.to_i))
   puts 'Creating Game...'.yellow
   game.start_game
 
