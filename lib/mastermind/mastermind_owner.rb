@@ -6,13 +6,17 @@ require_relative '../../helper/game_settings_helper' # Includes game settings va
 module Mastermind
   # Owner class is the Code-Maker. When generated, the Code-Breaker is guessing @answer.
   class Owner
-    attr_reader :answer,
-                :version
+    attr_reader :answer
+    attr_accessor :version
 
     def initialize(version = :regular)
       @answer = [] # maintains position of colors in code
       @version = VERSIONS.include?(version) ? version : :regular
       create_code
+    end
+
+    def my_set(answer)
+      @answer = answer
     end
 
     def compare_guess(guess)

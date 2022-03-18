@@ -3,6 +3,7 @@
 require_relative '../mastermind/mastermind_owner'
 require_relative '../../helper/color_options_choice' # Includes OPTIONS hash which refers to colors
 require_relative '../../helper/string_color_helper' # Adds colors to output
+require_relative '../../helper/mastermind_solver/solver_first_guess_helper' # helps decide first guess after base guess
 require_relative '../../helper/game_settings_helper'
 require 'benchmark'
 
@@ -13,54 +14,74 @@ module MastermindSolver
                 :turns_to_solve,
                 :owner,
                 :solutions_set,
-                :state
+                :state,
+                :version
 
-    def initialize
+    def initialize(version = :regular)
       @correct_answer = nil
       @turns_to_solve = 0
       @state = :unsolved
-      @owner = Mastermind::Owner.new
-      @answer_set = fill_set
+      @owner = Mastermind::Owner.new(version)
       @solutions_set = fill_set
+      @answer_set = solutions_set.dup
+      @choice = version == :regular ? FIRST_GUESS_REGULAR : FIRST_GUESS_SUPER
     end
 
     # solves for master code (Owner.answer)
-    def solve
+    def solve(var = Hash.new(0))
       if @state == :solved
-        puts 'You have already solved. You need to perfor `.restart` before you can try again'
+        puts 'You have already solved! You need to perform `.restart` before you can try again.'
         return false
       end
-      guess = %w[R R G G] # starting guess is based off of Wikipedia's Five-guess algorithm
+      # starting guess is based off of Wikipedia's Five-guess algorithm
+      guess = @owner.version == :regular ? %w[R R G B] : %w[R R G G B]
+      second_guess = []
+      a = 1
+      last_guess = nil
       loop do
-        @turns_to_solve += 1
+        if a == 2
+          second_guess[0] = guess
+          # print "taking guess: ".yellow
+          # print "#{guess}, ".white
+          second_guess[1] = last_guess
+          var[second_guess] += 1
+        end
         x = @owner.compare_guess(guess)
+        last_guess = x
+        @turns_to_solve += 1
         break if x == true
 
         # remove from S any code that would not give the same response if it were the code.
-        prune_set(
-          @solutions_set, guess, x
-        )
+        prune_set(@solutions_set, guess, x)
         # Apply minimax theory
-        guess = minimax # update the guess based on applying minimax.
+        if a == 1
+          if @choice[x]
+            guess = @choice[x]
+          end
+        else
+          guess = minimax
+        end
+        # guess = a == 1 ? @choice[x] : minimax # update the guess based on applying minimax.
         # Minimax will call to find best guess to return.
+        a += 1
       end
       @state = :solved
       print "Found answer: #{@correct_answer = guess}, and it took ".cyan
       print "#{@turns_to_solve} ".red
       puts  'turns to solve.'.cyan
-      [@correct_answer, @turns_to_solve]
+      [@correct_answer, @turns_to_solve, second_guess]
     end
 
-    # For restarting solver to default status, without re-loading @answer_set
+    # For restarting solver to default status, without calling fill_set again.
     def restart
-      @solutions_set = fill_set
-      @owner = Mastermind::Owner.new
+      @solutions_set = @answer_set.dup
+      @owner = Mastermind::Owner.new(@owner.version)
       @correct_answer = nil
       @turns_to_solve = 0
       @state = :unsolved
     end
 
-    def benchmark(number_of_tests)
+    def benchmark(number_of_tests, var = Hash.new(0))
       if number_of_tests.class != Integer || number_of_tests <= 0
         puts 'Method only accepts positive numbers'
         return false
@@ -69,14 +90,14 @@ module MastermindSolver
       number_of_tests.times do
         time << [Benchmark.realtime do
                    restart
-                   solve
+                   solve(var)
                  end, turns_to_solve]
       end
       restart
       calculate_and_return(time, number_of_tests)
     end
 
-    private
+    # private
 
     def calculate_and_return(my_info, number_of_tests)
       answer = [0, 0, 0] # [total_time, turns, max_turn]
@@ -106,10 +127,10 @@ module MastermindSolver
       puts  answer[3].to_s.blue
     end
 
-    # Fill set with all possible code combinations. 1296 combinations.
+    # Fill set with all possible code combinations.
     def fill_set
       s = Set.new
-      if owner.version == :regular
+      if owner.version == :regular # 1296 possible combinations for Mastermind.
         OPTIONS[owner.version].each do |i|
           OPTIONS[owner.version].each do |j|
             OPTIONS[owner.version].each do |k|
@@ -119,7 +140,7 @@ module MastermindSolver
             end
           end
         end
-      else
+      else # 32768 possible combinations for Super Mastermind.
         OPTIONS[owner.version].each do |a|
           OPTIONS[owner.version].each do |b|
             OPTIONS[owner.version].each do |c|
@@ -153,8 +174,7 @@ module MastermindSolver
       score = {} # This will hold a map of guesses => max_score
       map = Hash.new(0) # This will hold a map of score_sets => scores.
       min = max = 0
-
-      @answer_set.each do |full_answer|
+      @solutions_set.each do |full_answer|
         @solutions_set.each do |possible_answer|
           correct_possible = Mastermind::Owner.compare_guess(
             full_answer, possible_answer
@@ -166,7 +186,7 @@ module MastermindSolver
           max
         map.clear
       end
-      min = score.values.min
+      min = score.values.max
       score.each do |key, value|
         # puts "Score |key, value| = |#{key}, #{value}|"
         next_guesses << key if value == min
@@ -184,9 +204,9 @@ module MastermindSolver
       end
 
       # If not found above, then checks @answer_set.
-      guesses.each do |g|
-        return g if @answer_set.include?(g)
-      end
+      #guesses.each do |g|
+      #  return g if @answer_set.include?(g)
+      #end
     end
   end
 end
