@@ -35,41 +35,29 @@ module MastermindSolver
       end
       # starting guess is based off of Wikipedia's Five-guess algorithm
       guess = @owner.version == :regular ? %w[R R G B] : %w[R R G G B]
-      second_guess = []
       a = 1
-      last_guess = nil
       loop do
-        if a == 2
-          second_guess[0] = guess
-          # print "taking guess: ".yellow
-          # print "#{guess}, ".white
-          second_guess[1] = last_guess
-          var[second_guess] += 1
-        end
+        # print "taking guess: ".yellow
+        # print "#{guess}".white
         x = @owner.compare_guess(guess)
-        last_guess = x
+        # puts ", result is: #{x}"
         @turns_to_solve += 1
         break if x == true
 
         # remove from S any code that would not give the same response if it were the code.
         prune_set(@solutions_set, guess, x)
         # Apply minimax theory
-        if a == 1
-          if @choice[x]
-            guess = @choice[x]
-          end
-        else
-          guess = minimax
-        end
-        # guess = a == 1 ? @choice[x] : minimax # update the guess based on applying minimax.
+        guess = a == 1 ? @choice[x] : minimax
+        # update the guess based on applying minimax.
         # Minimax will call to find best guess to return.
+        var[[x, guess]] += 1 if a == 1
         a += 1
       end
       @state = :solved
       print "Found answer: #{@correct_answer = guess}, and it took ".cyan
       print "#{@turns_to_solve} ".red
       puts  'turns to solve.'.cyan
-      [@correct_answer, @turns_to_solve, second_guess]
+      [@correct_answer, @turns_to_solve]
     end
 
     # For restarting solver to default status, without calling fill_set again.
