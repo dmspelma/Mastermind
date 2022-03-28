@@ -63,7 +63,6 @@ module Mastermind
     end
 
     it 'checks validity for input when taking a guess' do
-
       expect(@code_maker.compare_guess('test')).to eq(false)
       expect(@code_maker.compare_guess(%w[G G G G G G])).to eq(false)
       expect(@code_maker.compare_guess(%w[GG GG GG GG])).to eq(false)
