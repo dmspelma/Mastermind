@@ -86,7 +86,7 @@ Version 1.1.0 introduced a single change to the solver. Originally, I was compar
 This also made it possible to solve for the Super Mastermind. However, it was still quite inefficient for this version due to the sheer number of calculations needed when attempting to calculate the best second guess.
 
 <div style="width: 400px; height: 300px;">
-	<img src="/assets/images/mastermind_solver/benchmark_solver_data_1.png" alt="Benchmark results for solve method" title="Benchmark Results Version 1.1.0">
+	<img src="/assets/images/mastermind_solver/benchmark_solver_data_2.png" alt="Benchmark results for solve method" title="Benchmark Results Version 1.1.0">
 </div>
 
 Version 1.2.0 introduced the idea of storing a pre-calculated guess to take based on the response of the first guess. Essentially, the longest amount of time when attempting to solve is because of the number of calculations needed to determind the best second guess. Since the guess is chosen with the lowest priority first, it is possible to `pre-guess` the second guess. After the first turn, I reference a saved map of guesses. For example, if I receive the response `[0,2]` when I take the first guess, I know its HIGHLY LIKELY the second guess will be `G G R G`.
@@ -94,5 +94,5 @@ Version 1.2.0 introduced the idea of storing a pre-calculated guess to take base
 After, the remaining `solutions_set` is even smaller, so it can even more quickly determine the next guesses. The this turns out to be more than 43x faster than the original implementation. However, this does increase the amount of guesses by up to +3 for a total max turns to solve of 8.
 
 <div style="width: 400px; height: 300px;">
-	<img src="/assets/images/mastermind_solver/benchmark_solver_data_1.png" alt="Benchmark results for solve method" title="Benchmark Results Version 1.2.0">
+	<img src="/assets/images/mastermind_solver/benchmark_solver_data_3.png" alt="Benchmark results for solve method" title="Benchmark Results Version 1.2.0">
 </div>
