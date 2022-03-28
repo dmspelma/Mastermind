@@ -4,10 +4,10 @@ require_relative '../../helper/color_options_choice' # Includes OPTIONS hash whi
 require_relative '../../helper/game_settings_helper' # Includes game settings variables.
 
 module Mastermind
-  # Owner class is the Code-Maker. When generated, the Code-Breaker is guessing @answer.
+  # Owner class is the Code-Maker. When generated, the Code-Breaker is guessing for @answer.
   class Owner
-    attr_reader :answer,
-                :version
+    attr_reader :answer
+    attr_accessor :version
 
     def initialize(version = :regular)
       @answer = [] # maintains position of colors in code
@@ -15,15 +15,24 @@ module Mastermind
       create_code
     end
 
-    def compare_guess(guess)
-      return false if guess.length != LENGTH[version]
-
-      self.class.compare_guess(answer, guess) # should probably add validations/exceptions?
+    def my_set(answer)
+      @answer = answer
     end
 
-    # should probably add validations/exceptions?
+    def compare_guess(guess)
+      self.class.compare_guess(answer, guess)
+    end
+
     def self.compare_guess(answer, guess)
       return false if answer.length != guess.length
+      return false if guess.class != Array
+
+      guess.each do |g|
+        return false if g.class != String
+        return false if g.length != 1
+        return false unless OPTIONS[LENGTH.key(guess.length)].include?(g)
+      end
+
       return true if guess == answer
 
       answer_hash = Hash.new(0)
@@ -33,7 +42,8 @@ module Mastermind
       end
       correct = possible = 0
       tmp = [] # holds indexes of guesses that are not exactly 'correct'
-      # check to see if any index is exactly correct
+
+      # below checks to see if any index is exactly correct
       guess.each_with_index do |c, i|
         if c == answer[i]
           correct += 1
@@ -42,7 +52,8 @@ module Mastermind
           tmp << i
         end
       end
-      # check to see if the indexs have a possible match
+
+      # below checks to see if the indexs have a possible match
       tmp.each do |t|
         if answer_hash[guess[t]].positive?
           possible += 1

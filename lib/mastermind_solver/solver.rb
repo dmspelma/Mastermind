@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require_relative '../mastermind/mastermind_owner'
-require_relative '../../helper/color_options_choice' # Includes OPTIONS hash which refers to colors
-require_relative '../../helper/string_color_helper' # Adds colors to output
+require_relative '../../helper/color_options_choice' # Include OPTIONS hash which refers to colors.
+require_relative '../../helper/string_color_helper' # Adds color to output.
+require_relative '../../helper/mastermind_solver/solver_first_guess_helper' # picks second guess.
 require_relative '../../helper/game_settings_helper'
 require 'benchmark'
 
@@ -13,36 +14,40 @@ module MastermindSolver
                 :turns_to_solve,
                 :owner,
                 :solutions_set,
-                :state
+                :state,
+                :version
 
-    def initialize
+    def initialize(version = :regular)
       @correct_answer = nil
       @turns_to_solve = 0
       @state = :unsolved
-      @owner = Mastermind::Owner.new
-      @answer_set = fill_set
+      @owner = Mastermind::Owner.new(version)
       @solutions_set = fill_set
+      @answer_set = solutions_set.dup
+      @choice = version == :regular ? FIRST_GUESS_REGULAR : FIRST_GUESS_SUPER
     end
 
     # solves for master code (Owner.answer)
-    def solve
+    def solve(var = Hash.new(0))
       if @state == :solved
-        puts 'You have already solved. You need to perfor `.restart` before you can try again'
+        puts 'You have already solved! You need to perform `.restart` before you can try again.'
         return false
       end
-      guess = %w[R R G G] # starting guess is based off of Wikipedia's Five-guess algorithm
+
+      guess = @owner.version == :regular ? %w[R R G B] : %w[R R G G B]
+      a = 1
       loop do
-        @turns_to_solve += 1
         x = @owner.compare_guess(guess)
+        @turns_to_solve += 1
         break if x == true
 
         # remove from S any code that would not give the same response if it were the code.
-        prune_set(
-          @solutions_set, guess, x
-        )
-        # Apply minimax theory
-        guess = minimax # update the guess based on applying minimax.
-        # Minimax will call to find best guess to return.
+        prune_set(@solutions_set, guess, x)
+
+        # Call @choice if a == 1 (our second guess). Otherwise, call minimax
+        guess = a == 1 ? @choice[x] : minimax
+        var[[x, guess]] += 1 if a == 1
+        a += 1
       end
       @state = :solved
       print "Found answer: #{@correct_answer = guess}, and it took ".cyan
@@ -51,16 +56,17 @@ module MastermindSolver
       [@correct_answer, @turns_to_solve]
     end
 
-    # For restarting solver to default status, without re-loading @answer_set
+    # For restarting solver to default status, without calling fill_set again.
     def restart
-      @solutions_set = fill_set
-      @owner = Mastermind::Owner.new
+      @solutions_set = @answer_set.dup
+      @owner = Mastermind::Owner.new(@owner.version)
       @correct_answer = nil
       @turns_to_solve = 0
       @state = :unsolved
     end
 
-    def benchmark(number_of_tests)
+    # For obtaining results of benchmarking solving + restart functions.
+    def benchmark(number_of_tests, var = Hash.new(0))
       if number_of_tests.class != Integer || number_of_tests <= 0
         puts 'Method only accepts positive numbers'
         return false
@@ -69,7 +75,7 @@ module MastermindSolver
       number_of_tests.times do
         time << [Benchmark.realtime do
                    restart
-                   solve
+                   solve(var)
                  end, turns_to_solve]
       end
       restart
@@ -106,10 +112,10 @@ module MastermindSolver
       puts  answer[3].to_s.blue
     end
 
-    # Fill set with all possible code combinations. 1296 combinations.
+    # Fill set with all possible code combinations.
     def fill_set
       s = Set.new
-      if owner.version == :regular
+      if owner.version == :regular # 1296 possible combinations for Mastermind.
         OPTIONS[owner.version].each do |i|
           OPTIONS[owner.version].each do |j|
             OPTIONS[owner.version].each do |k|
@@ -119,7 +125,7 @@ module MastermindSolver
             end
           end
         end
-      else
+      else # 32768 possible combinations for Super Mastermind.
         OPTIONS[owner.version].each do |a|
           OPTIONS[owner.version].each do |b|
             OPTIONS[owner.version].each do |c|
@@ -147,14 +153,13 @@ module MastermindSolver
     end
 
     # Finds the Maximum number of possible correct `guesses`
-    # Then, it chooses the `guess` that provies the smallest number of possible changes
+    # Then, it chooses the `guess` that is best to take next.
     def minimax
       next_guesses = [] # This is what will be returned. An array of guesses to take.
       score = {} # This will hold a map of guesses => max_score
-      map = Hash.new(0) # This will hold a map of score_sets => scores.
+      map = Hash.new(0) # This will hold a map of score_sets (eg. [1,0]) => number seen.
       min = max = 0
-
-      @answer_set.each do |full_answer|
+      @solutions_set.each do |full_answer|
         @solutions_set.each do |possible_answer|
           correct_possible = Mastermind::Owner.compare_guess(
             full_answer, possible_answer
@@ -166,26 +171,17 @@ module MastermindSolver
           max
         map.clear
       end
-      min = score.values.min
+      min = score.values.max
       score.each do |key, value|
-        # puts "Score |key, value| = |#{key}, #{value}|"
         next_guesses << key if value == min
       end
-      # puts "score is: #{score}"
-      # puts "next_guess is: #{next_guesses}"
       get_next_guess(next_guesses) # Return best guess from list. Prioritizes lowest
     end
 
     # returns the first guess that exists.
     def get_next_guess(guesses)
-      # first checks @solutions_set for guess.
       guesses.each do |g|
         return g if @solutions_set.include?(g)
-      end
-
-      # If not found above, then checks @answer_set.
-      guesses.each do |g|
-        return g if @answer_set.include?(g)
       end
     end
   end

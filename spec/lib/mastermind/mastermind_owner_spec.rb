@@ -62,6 +62,14 @@ module Mastermind
       expect(x[0] + x[1]).to be <= 4
     end
 
+    it 'checks validity for input when taking a guess' do
+      expect(@code_maker.compare_guess('test')).to eq(false)
+      expect(@code_maker.compare_guess(%w[G G G G G G])).to eq(false)
+      expect(@code_maker.compare_guess(%w[GG GG GG GG])).to eq(false)
+      expect(@code_maker.compare_guess(%w[1 1 1 1])).to eq(false)
+      expect(@code_maker.compare_guess(%w[R P C C])).to eq(false)
+    end
+
     it 'can compare guesses without an instance of the class' do
       a = %w[R G B W]
       b = %w[R G B K]
