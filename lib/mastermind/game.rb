@@ -2,6 +2,7 @@
 
 require_relative 'mastermind_owner'
 require_relative '../../helper/color_options_choice'
+require_relative '../../helper/pretty_put_helper'
 
 # handles game initialization + processes for playing game
 module Mastermind
@@ -57,7 +58,7 @@ module Mastermind
       puts 'GAME OVER!'.red
       puts 'You have ran out of turns!'.red
       print "The Mastermind's code was: ".red
-      puts @code_maker.answer.join.to_s.white
+      puts color_print(@code_maker.answer)
       @state = :loser
     end
 

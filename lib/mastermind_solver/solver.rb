@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require_relative '../mastermind/mastermind_owner'
-require_relative '../../helper/color_options_choice' # Include OPTIONS hash which refers to colors.
-require_relative '../../helper/string_color_helper' # Adds color to output.
-require_relative '../../helper/mastermind_solver/solver_first_guess_helper' # picks second guess.
-require_relative '../../helper/game_settings_helper'
+require_relative '../../helper/mastermind_solver/solver_first_guess_helper'
+require_relative '../../helper/string_color_helper'
+require_relative '../../helper/pretty_put_helper'
+
+# require_relative '../../helper/*'
 require 'benchmark'
 
 module MastermindSolver
@@ -50,7 +51,7 @@ module MastermindSolver
         a += 1
       end
       @state = :solved
-      print "Found answer: #{@correct_answer = guess}, and it took ".cyan
+      print "Found answer: #{color_print(@correct_answer = guess)}, and it took ".cyan
       print "#{@turns_to_solve} ".red
       puts  'turns to solve.'.cyan
       [@correct_answer, @turns_to_solve]
