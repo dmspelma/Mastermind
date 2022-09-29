@@ -19,9 +19,8 @@ module MastermindSolver
 
     it 'verifies fill_set method creates set with 32768 different entries' do
       expect(@my_solver.solutions_set.length).to eq(32_768)
-      expect(@my_solver.solutions_set.include?(%w[R R R R R])).to eq(true)
-      expect(@my_solver.solutions_set.include?(%w[R R G B P])).to eq(true)
-      expect(@my_solver.solutions_set.include?(%w[K K K K P])).to eq(true)
+      expect(@my_solver.solutions_set.include?(nil)).to_not eq(true)
+      expect(@my_solver.solutions_set.first.length).to eq(5)
     end
 
     it 'can solve for super-version owner code' do
@@ -34,6 +33,11 @@ module MastermindSolver
 
     it 'can benchmark solving for super-version of master code' do
       expect(@my_solver.benchmark(2)).to_not eq(nil)
+    end
+
+    it 'prints correct answer in color on solve' do
+      correct_answer = @my_solver.solve
+      expect(color_print(correct_answer[0]).include?('['.white)).to eq(true)
     end
   end
 end
