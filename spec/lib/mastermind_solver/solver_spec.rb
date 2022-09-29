@@ -126,5 +126,10 @@ module MastermindSolver
       expect(@my_solver.benchmark(2).length).to eq(4)
       expect(@my_solver.solve.length).to eq(2)
     end
+
+    it 'prints correct answer in color on solve' do
+      correct_answer = @my_solver.solve
+      expect(color_print(correct_answer[0]).include?('['.white)).to eq(true)
+    end
   end
 end
