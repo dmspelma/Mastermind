@@ -2,7 +2,7 @@
 
 require_relative 'mastermind_owner'
 require_relative '../../helper/color_options_choice'
-require_relative '../../helper/pretty_put_helper'
+require_relative '../../helper/color_print_helper'
 
 # handles game initialization + processes for playing game
 module Mastermind

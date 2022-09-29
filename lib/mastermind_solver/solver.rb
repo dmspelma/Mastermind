@@ -3,7 +3,7 @@
 require_relative '../mastermind/mastermind_owner'
 require_relative '../../helper/mastermind_solver/solver_first_guess_helper'
 require_relative '../../helper/string_color_helper'
-require_relative '../../helper/pretty_put_helper'
+require_relative '../../helper/color_print_helper'
 
 # require_relative '../../helper/*'
 require 'benchmark'
