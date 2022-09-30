@@ -4,6 +4,8 @@ require_relative '../../../lib/mastermind_solver/solver'
 
 module MastermindSolver
   describe Solver do
+    include ColorHelper
+    
     before do
       @my_solver = MastermindSolver::Solver.new(:super)
       $stdout.stub(:write)

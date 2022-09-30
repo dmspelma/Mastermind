@@ -5,6 +5,7 @@ require_relative '../../../helper/string_color_helper'
 require_relative '../../helper/spec_helper'
 
 module Mastermind
+  include GameParams
   # Base kit of MastermindGame Class
   RSpec.describe MastermindGame do
     before do

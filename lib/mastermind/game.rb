@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 require_relative 'mastermind_owner'
-require_relative '../../helper/color_options_choice'
 require_relative '../../helper/color_print_helper'
 
 # handles game initialization + processes for playing game
 module Mastermind
   # The Game class. This handles game mechanics
   class MastermindGame
+    include ColorHelper
+    include GameParams
+
     attr_reader :game_counter,
                 :code_maker,
                 :version
@@ -19,7 +21,7 @@ module Mastermind
       @code_maker = nil
       @state = nil
       @game_counter = 0
-      @version = VERSIONS.include?(version) ? version : :regular
+      @version = version_grab(version)
     end
 
     def start_game
@@ -68,12 +70,16 @@ module Mastermind
 
     private
 
+    def version_grab(version)
+      VERSIONS.include?(version) ? version : :regular
+    end
+
     def validate(guess)
       result = true
       result &= guess.instance_of?(Array)
       result &= guess.length == LENGTH[version]
       guess.each do |i|
-        result &= (OPTIONS[version]).include?(i)
+        result &= (VALID_OPTIONS[version]).include?(i)
       end
 
       result
