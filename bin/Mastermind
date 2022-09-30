@@ -38,7 +38,7 @@ loop do
     when 'help' # player needs help mid-game
       puts '-'.cyan * 83
       print 'Your goal is to crack the code! '.green
-      puts "The code is a #{LENGTH[game.version]}-color combination of the following:".green
+      puts "The code is a #{GameParams::LENGTH[game.version]}-color combination of the following:".green
       puts '`R` for Red'.red
       puts '`G` for Green'.green
       puts '`B` for Blue'.blue
@@ -49,7 +49,7 @@ loop do
       puts '`K` for Black'.black
       print 'NOTE: '.red
       puts 'There can be multiples of the same color.'.green
-      puts "You only have #{TURNS[game.version]}".red
+      puts "You only have #{GameParams::TURNS[game.version]}".red
       puts '-'.cyan * 83
 
     when 'q', 'quit', 'exit' # player wants to quit mid-game
@@ -72,7 +72,7 @@ loop do
     game.lost if game.turns_remaining.zero?
   end
 
-  break if QUIT_CONTENTS.include?(player_guess.join.downcase)
+  break if GameParams::QUIT_CONTENTS.include?(player_guess.join.downcase)
 
   print 'Would you like to play again?'.green
   puts ' (Press Q to quit)'.yellow

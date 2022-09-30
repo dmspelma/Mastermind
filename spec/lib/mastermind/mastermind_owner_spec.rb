@@ -14,7 +14,7 @@ module Mastermind
       expect(@code_maker.answer.class).to eq(Array)
       expect(@code_maker.answer.length).to eq(LENGTH[@code_maker.version])
       @code_maker.answer.each do |code|
-        expect(OPTIONS[@code_maker.version].include?(code)).to eq(true)
+        expect(VALID_OPTIONS[@code_maker.version].include?(code)).to eq(true)
       end
     end
 
@@ -53,7 +53,7 @@ module Mastermind
       while x == true
         answer = []
         4.times do
-          answer << OPTIONS[@code_maker.version].sample
+          answer << VALID_OPTIONS[@code_maker.version].sample
         end
         x = @code_maker.compare_guess(answer)
       end
@@ -87,9 +87,9 @@ module Mastermind
     it 'has specific color options for regular version' do
       my_options = %w[R G B Y W K]
       my_options.each do |o|
-        expect(OPTIONS[@code_maker.version].include?(o)).to eq(true)
+        expect(VALID_OPTIONS[@code_maker.version].include?(o)).to eq(true)
       end
-      expect(OPTIONS[@code_maker.version].length).to eq(6)
+      expect(VALID_OPTIONS[@code_maker.version].length).to eq(6)
     end
   end
 end

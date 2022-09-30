@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-require_relative '../../helper/color_options_choice' # Includes OPTIONS hash which refers to colors
 require_relative '../../helper/game_settings_helper' # Includes game settings variables.
 
 module Mastermind
   # Owner class is the Code-Maker. When generated, the Code-Breaker is guessing for @answer.
   class Owner
+    include GameParams
+
     attr_reader :answer
     attr_accessor :version
 
@@ -30,7 +31,7 @@ module Mastermind
       guess.each do |g|
         return false if g.class != String
         return false if g.length != 1
-        return false unless OPTIONS[LENGTH.key(guess.length)].include?(g)
+        return false unless VALID_OPTIONS[LENGTH.key(guess.length)].include?(g)
       end
 
       return true if guess == answer
@@ -68,7 +69,7 @@ module Mastermind
 
     def create_code
       LENGTH[version].times do
-        @answer << OPTIONS[version].sample
+        @answer << VALID_OPTIONS[version].sample
       end
     end
   end

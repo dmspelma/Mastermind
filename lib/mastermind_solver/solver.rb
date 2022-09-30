@@ -1,15 +1,20 @@
 # frozen_string_literal: true
 
 require_relative '../mastermind/mastermind_owner'
-require_relative '../../helper/color_options_choice' # Include OPTIONS hash which refers to colors.
-require_relative '../../helper/string_color_helper' # Adds color to output.
-require_relative '../../helper/mastermind_solver/solver_first_guess_helper' # picks second guess.
+require_relative '../../helper/mastermind_solver/solver_first_guess_helper'
+require_relative '../../helper/string_color_helper'
+require_relative '../../helper/color_print_helper'
 require_relative '../../helper/game_settings_helper'
+
+# require_relative '../../helper/*'
 require 'benchmark'
 
 module MastermindSolver
   # Class that solves (and benchmarks) for Mastermind::Owner.answer
   class Solver
+    include ColorHelper
+    include GameParams
+
     attr_reader :correct_answer,
                 :turns_to_solve,
                 :owner,
@@ -50,7 +55,7 @@ module MastermindSolver
         a += 1
       end
       @state = :solved
-      print "Found answer: #{@correct_answer = guess}, and it took ".cyan
+      print "Found answer: #{color_print(@correct_answer = guess)}, and it took ".cyan
       print "#{@turns_to_solve} ".red
       puts  'turns to solve.'.cyan
       [@correct_answer, @turns_to_solve]
@@ -116,21 +121,21 @@ module MastermindSolver
     def fill_set
       s = Set.new
       if owner.version == :regular # 1296 possible combinations for Mastermind.
-        OPTIONS[owner.version].each do |i|
-          OPTIONS[owner.version].each do |j|
-            OPTIONS[owner.version].each do |k|
-              OPTIONS[owner.version].each do |l|
+        VALID_OPTIONS[owner.version].each do |i|
+          VALID_OPTIONS[owner.version].each do |j|
+            VALID_OPTIONS[owner.version].each do |k|
+              VALID_OPTIONS[owner.version].each do |l|
                 s.add([i, j, k, l])
               end
             end
           end
         end
       else # 32768 possible combinations for Super Mastermind.
-        OPTIONS[owner.version].each do |a|
-          OPTIONS[owner.version].each do |b|
-            OPTIONS[owner.version].each do |c|
-              OPTIONS[owner.version].each do |d|
-                OPTIONS[owner.version].each do |e|
+        VALID_OPTIONS[owner.version].each do |a|
+          VALID_OPTIONS[owner.version].each do |b|
+            VALID_OPTIONS[owner.version].each do |c|
+              VALID_OPTIONS[owner.version].each do |d|
+                VALID_OPTIONS[owner.version].each do |e|
                   s.add([a, b, c, d, e])
                 end
               end

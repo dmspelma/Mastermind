@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'Mastermind'
-  s.version     = '1.1.0'
+  s.version     = '1.2.0'
   s.licenses    = ['MIT']
   s.summary     = 'A gem to play `Mastermind`!'
   s.description = 'Play the class game `Mastermind` in your Terminal! Includes a solver!'
